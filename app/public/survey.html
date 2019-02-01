@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+  </head>
+  <title>Friend Survey</title>
+  <body>
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" />
+    </div>
+    <div class="form-group">
+      <label for="phone">Picture URL</label>
+      <input type="text" class="form-control" id="picture" />
+    </div>
+    <p>
+      On a scale from one to five, with one being you totally disagree and five
+      being you totally agree, please answer the statements.
+    </p>
+
+    <p>1. You enjoy going out for fun more than hanging out in your house.</p>
+    <select class="Q1">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>2. You would rather cook a meal than eat out.</p>
+    <select class="Q2">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>3. You prefer STEM over liberal arts.</p>
+    <select class="Q3">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>4. Being in an extremely big crowd for hours makes you anxious.</p>
+    <select class="Q4">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>
+      5. When going on a trip, you prefer to relax over doing something
+      thrilling like skiing or skydiving.
+    </p>
+    <select class="Q5">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>
+      6. It's okay to blow off work once in a blue moon to hang out with your
+      friends.
+    </p>
+    <select class="Q6">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>7. Programming is too frustrating and will never want to code again.</p>
+    <select class="Q7">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>8. You prefer Xbox over PlayStation.</p>
+    <select class="Q8">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>9. Driking alcohol is enjoyable.</p>
+    <select class="Q9">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <p>10. Anime is for kids only.</p>
+    <select class="Q10">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+
+    <div class="centeringbuttons">
+      <a class="btn btn-primary btn-lg" role="button" id="submit-btn">Submit</a>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal" style="width:100%; height:100%">
+      <!-- Modal content -->
+      <div class="modal-content" style="width:100%; height:100%">
+        <span class="close">&times;</span>
+        <div id="best-friend-name"></div>
+        <img id="best-friend-image" />
+      </div>
+    </div>
+  </body>
+</html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"
+></script>
+<script type="text/javascript">
+  $("#submit-btn").on("click", function(event) {
+    event.preventDefault();
+    var answers = [];
+
+    for (var i = 0; i < 10; i++) {
+      answers[i] = $(".Q" + parseInt(i + 1).toString()).val();
+    }
+
+    var newFriend = {
+      name: $("#name")
+        .val()
+        .trim(),
+      photo: $("#picture")
+        .val()
+        .trim(),
+      scores: answers
+    };
+    $.post("/api/friends", newFriend).then(function(data) {
+      //alert("You have been added");
+      $("#best-friend-name").text(data.name);
+      $("#best-friend-image").attr("src", data.photo);
+      $("#best-friend-image").attr("width", "300px");
+      $("#best-friend-image").attr("height", "400px");
+    });
+
+    //opens the popup to display best friend
+    $("#myModal").css("display", "block");
+  });
+  $(".close").on("click", function(event) {
+    event.preventDefault();
+    $("#myModal").css("display", "none");
+  });
+
+  $.get("/api/friends");
+</script>
